@@ -1,0 +1,16 @@
+dataset/
+├── data.yaml          # 数据配置文件（训练+推理参数都写这里）
+├── images/
+│   ├── train/         # 训练图片
+│   ├── val/           # 验证图片
+│   └── detect/        # 推理时用的图片（input_dir 指向这里）
+├── labels/
+│   ├── train/         # 对应训练图片的标签
+│   └── val/           # 对应验证图片的标签
+
+3. 安装依赖
+pip install ultralytics opencv-python pyyaml tqdm
+
+4. 运行脚本
+python train_and_detect.py
+python 1.py

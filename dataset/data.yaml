@@ -1,0 +1,37 @@
+ # 数据集路径
+path: dataset
+train: images/train
+val: images/val
+
+# 类别名（id: 名称）
+names:
+  0: 人
+  1: 猫
+  2: 狗
+  3: 山
+  4: 树
+
+# 归类规则
+categories:
+  human: [0]          # 人类类别id
+  animal: [1, 2]      # 动物类别id
+  landscape: [3, 4]   # 风景类别id
+
+# 训练参数
+train_params:
+  model_type: yolov8n.pt    # 模型结构
+  epochs: 100               # 训练轮数
+  imgsz: 640                # 输入尺寸
+  batch: 16                 # 批次
+  device: 0                 # GPU id 或 "cpu"
+  patience: 20              # 早停策略
+  optimizer: SGD            # 优化器
+  pretrained: true          # 预训练权重
+  save_dir: ./models        # 保存目录
+
+# 推理参数
+infer_params:
+  input_dir: dataset/images/detect
+  output_dir: ./results
+  conf_threshold: 0.25
+  draw_boxes: true

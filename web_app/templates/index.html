@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>YOLOv8 Web检测</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 30px; }
+        input[type=file] { margin: 10px 0; }
+        button { padding: 8px 15px; font-size: 14px; margin: 5px; }
+        img, video { max-width: 80%; margin-top: 10px; border: 1px solid #ccc; }
+        #status { margin-top: 10px; color: green; }
+    </style>
+</head>
+<body>
+    <h1>YOLOv8 Web检测</h1>
+
+    <h3>图片检测</h3>
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">上传检测</button><br>
+
+    <h3>视频检测</h3>
+    <input type="file" id="videoInput" accept="video/*">
+    <button onclick="uploadVideo()">上传视频检测</button><br>
+
+    <h3>实时摄像头检测</h3>
+    <button onclick="startCamera()">开始摄像头检测</button><br>
+
+    <div id="status"></div>
+    <div id="result">
+        <img id="resultImg" src="" alt="">
+        <video id="resultVideo" controls></video>
+        <img id="cameraFeed" alt="">
+    </div>
+
+<script>
+async function uploadImage() {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+    if (!file) { alert("请选择图片"); return; }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").innerText = "图片上传中...";
+    const response = await fetch("/detect_image", { method: "POST", body: formData });
+    const data = await response.json();
+
+    if (data.result_path) {
+        document.getElementById("status").innerText = "图片检测完成！";
+        document.getElementById("resultImg").src = "/" + data.result_path.replace(/\\/g,"/");
+    } else {
+        document.getElementById("status").innerText = "检测失败！";
+    }
+}
+
+async function uploadVideo() {
+    const fileInput = document.getElementById("videoInput");
+    const file = fileInput.files[0];
+    if (!file) { alert("请选择视频"); return; }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").innerText = "视频上传中...";
+    const response = await fetch("/detect_video", { method: "POST", body: formData });
+    const data = await response.json();
+
+    if (data.result_path) {
+        document.getElementById("status").innerText = "视频检测完成！";
+        const videoElem = document.getElementById("resultVideo");
+        videoElem.src = "/" + data.result_path.replace(/\\/g,"/");
+        videoElem.load();
+        videoElem.play();
+    } else {
+        document.getElementById("status").innerText = "检测失败！";
+    }
+}
+
+function startCamera() {
+    const cameraImg = document.getElementById("cameraFeed");
+    cameraImg.src = "/video_feed";
+    document.getElementById("status").innerText = "摄像头检测中...";
+}
+</script>
+</body>
+</html>
